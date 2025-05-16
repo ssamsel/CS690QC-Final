@@ -1,0 +1,79 @@
+\section{Appendix: Queuing Theory Analysis}
+These simulations can be modeled as M/G/1 queues with different service times for different classes of requests.
+Let $X_i$ be the service time of class $i$, $X$ be the average service time, and $I$ be the current class being serviced.
+\subsection{M/G/1 Overview}
+\begin{align*}
+    \E[X] & = \sum_{i}\E[X_i]P(I=i)                              \\
+          & = \sum_{i}\E[X_i]\frac{\lambda_i}{\sum_{j}\lambda_j} \\
+          & = \frac{\sum_{i}\lambda_i\E[X_i]}{\sum_{j}\lambda_j}
+\end{align*}
+Let $\rho$ be the utilization, $\lambda = \sum_{j}\lambda_j$. The system is stable when $\rho \leq 1$
+\begin{align*}
+    \rho                                     & = \lambda\E[X]         \\
+    \lambda\E[X]                             & \leq 1                 \\
+    \E[X]                                    & \leq \frac{1}{\lambda} \\
+    \frac{\sum_{i}\lambda_i\E[X_i]}{\lambda} & \leq \frac{1}{\lambda} \\
+    \sum_{i}\lambda_i\E[X_i]                 & \leq 1
+\end{align*}
+The lower the expected service time is, the better performance we expect both in terms of fidelity and latency,
+although they are not directly correlated.
+\subsection{Sequential Entanglement}
+Recall that $N_{i},N_{j} \sim \mbox{ Geom}(p_{i}),\mbox{ Geom}(p_{j})$
+\begin{align*}
+    X_i     & = 2\tau_{i_1}N_{i_1}+ 2\tau_{i_2}N_{i_2}                    \\
+    \E[X_i] & = \E[2\tau_{i_1}N_{i_i}+2\tau_{i_1}N_{i_2}]                 \\
+            & = \frac{2\tau_{i_1}}{p_{i_1}} + \frac{2\tau_{i_2}}{p_{i_2}}
+\end{align*}
+\subsection{Parallel Entanglement}
+\begingroup
+\allowdisplaybreaks
+\begin{align*}
+    X_i                                      & = \max\{2\tau_{i_1}N_{i_1}, 2\tau_{i_2}N_{i_2}\}                                                                                                            \\
+    \E[X_i]                                  & = 2\tau_{i_1}\E[N_{i_1}|\tau_{i_1}N_{i_1} > \tau_{i_2}N_{i_2}]P(\tau_{i_1}N_{i_1} > \tau_{i_2}N_{i_2})                                                      \\
+                                             & + 2\tau_{i_2}\E[N_{i_2}|\tau_{i_1}N_{i_1} \leq \tau_{i_2}N_{i_2}]P(\tau_{i_1}N_{i_1} \leq \tau_{i_2}N_{i_2})                                                \\
+                                             & = \frac{2\tau_{i_1}}{p_{i_1}}P(\tau_{i_1}N_{i_1} > \tau_{i_2}N_{i_2})+\frac{2\tau_{i_2}}{p_{i_2}}P(\tau_{i_1}N_{i_1} \leq \tau_{i_2}N_{i_2})                \\
+                                             & = \left(\frac{2\tau_{i_1}}{p_{i_1}} - \frac{2\tau_{i_2}}{p_{i_2}}\right)P(\tau_{i_1}N_{i_1} > \tau_{i_2}N_{i_2}) + \frac{2\tau_{i_2}}{p_{i_2}}              \\
+    P(\tau_{i_1}N_{i_1} > \tau_{i_2}N_{i_2}) & = \sum_{n=1}^{\infty}P(\tau_{i_1}N_{i_1} > \tau_{i_2}n | \tau_{i_2}N_{i_2} = \tau_{i_2}n)P(\tau_{i_2}N_{i_2}=\tau_{i_2}n)                                   \\
+                                             & = \sum_{n=1}^{\infty}P(N_{i_1} > \frac{\tau_{i_2}}{\tau_{i_1}}n | N_{i_2} = n)P(N_{i_2}=n)                                                                  \\
+                                             & = \sum_{n=1}^{\infty}(1-p_{i_1})^{\left\lfloor{n\frac{\tau_{i_2}}{\tau_{i_1}}}\right\rfloor}(1-p_{i_2})^{n-1}p_{i_2}                                        \\
+                                             & \approx \sum_{n=1}^{50}(1-p_{i_1})^{\left\lfloor{n\frac{\tau_{i_2}}{\tau_{i_1}}}\right\rfloor}(1-p_{i_2})^{n-1}p_{i_2},\forall L \leq 50                    \\
+                                             & :=P_{par}(p_{i_1},p_{i_2},\tau_{i_1},\tau_{i_2})                                                                                                            \\
+    \E[X_i]                                  & \approx \left(\frac{2\tau_{i_1}}{p_{i_1}} - \frac{2\tau_{i_2}}{p_{i_2}}\right) P_{par}(p_{i_1},p_{i_2},\tau_{i_1},\tau_{i_2}) + \frac{2\tau_{i_2}}{p_{i_2}}
+\end{align*}
+\endgroup
+\subsection{Smart Entanglement}
+\subsubsection{SmartOnDemand Probability Derivation}
+Let $F_i$ be the time the shorter/faster-in-expectation link takes to entangle in class $i$, and $S_i$ be the longer/slower-in-expectation link's time in class $i$
+\begingroup
+\allowdisplaybreaks
+\begin{align*}
+    X_i                           & = \left\{\begin{array}{lr}
+                                                 F_i                  & \mbox{ sequential} \\
+                                                 \left|S_i-F_i\right| & \mbox{ parallel}
+                                             \end{array}\right.                                                                                              \\
+    P(F_i > \left|S_i-F_i\right|) & = P(F_i^2 > F_i^2-2SF_i+S_i^2)= P(2F_i > S_i)                                                                                                   \\
+                                  & = P(2\tau_{fast}N_{fast} > \tau_{slow}N_{slow})                                                                                                 \\
+                                  & = \sum_{n=1}^{\infty}P(2F_i>2n\tau_{slow}|S_i=2n\tau_{slow})P(S_i=2n\tau_{slow})                                                                \\
+                                  & = \sum_{n=1}^{\infty}P(F_i>n\tau_{slow})P(S_i=2n\tau_{slow})                                                                                    \\
+                                  & = \sum_{n=1}^{\infty}(1-p_{fast})^{\left\lfloor{n\frac{\tau_{slow}}{2\tau_{fast}}}\right\rfloor}(0-p_{slow})^{n-1}p_{slow}                      \\
+                                  & \approx \sum_{n=1}^{50}(1-p_{fast})^{\left\lfloor{n\frac{\tau_{slow}}{2\tau_{fast}}}\right\rfloor}(1-p_{slow})^{n-1}p_{slow}, \forall L \leq 50 \\
+                                  & := P_{smt}(p_{fast}, p_{slow}, \tau_{fast}, \tau_{slow})                                                                                        \\
+\end{align*}
+\endgroup
+\subsubsection{Expected Class Service Time}
+\begin{align*}
+    X_i     & = \left\{\begin{array}{lr}
+                           \underset{par}{X_i}, & P(F_i>|S_i-F_i|) > .5       \\
+                           \underset{seq}{X_i}, & P(F_i\leq|S_i-F_i|) \leq .5 \\
+                       \end{array}\right. \\
+    \E[X_i] & = \left\{\begin{array}{lr}
+                           \E_{par}[X_i], & P(F_i>|S_i-F_i|) > .5       \\
+                           \E{seq}[X_i],  & P(F_i\leq|S_i-F_i|) \leq .5 \\
+                       \end{array}\right.       \\
+\end{align*}
+This is dependent on network topology, and I am unsure of a good way to calculate this or approximate it in closed form unfortunately.
+\subsection{Determining which Algorithm is Statistically Best}
+As discussed earlier, there are some cases where parallel is better than sequential and vice-versa.
+From the expected class service time of \textit{SmartOnDemand} we see that it is bounded by whichever entanglement generation strategy performs better on average for a given class.
+This means \textit{SmartOnDemand} behaves optimally in the context of parallel vs sequential on the class level and thus the global system level.
+This is consistent with my findings and this analysis is what motived the design/implementation and testing of \textit{SmartOnDemand}.

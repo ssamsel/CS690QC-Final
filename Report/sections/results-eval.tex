@@ -1,0 +1,43 @@
+\section{Results and Evaluation}
+\subsection{Algorithms Tested}
+I tested the following algorithms and variants:
+\subsubsection{ParallelOnDemand}
+When a request is at the head of the queue, the switch starts attempting entanglement between relevant peers in parallel and makes the BSM immediately once both EPR pairs are created.
+\subsubsection{SequentialOnDemand}
+This algorithm is the same as \textit{ParallelOnDemand}, except that it waits for one entanglement to succeed before starting to attempt to entangle the other.
+\subsubsection{QoS Variants}
+These algorithms maintaining the entanglement scheduling policy of their parents, but before making a BSM, the algorithm calculates the would-be post swap fidelity.
+If the fidelity is below a certain threshold (.8 in my tests) the bell state(s) are discarded and entanglement generation must rescheduled according to the parent algorithm.
+This provides a fidelity quality of service guarantee, hence the name.
+\subsubsection{SmartOnDemand}
+In a network where link lengths differ, entanglement times differ. If the times to entanglements differ a lot, it means one EPR pair will be decaying for a relatively long period while the system is waiting on the other EPR pair to be created.
+In these cases, fidelity will generally be higher if entanglement is done sequentially, starting with the longer link length. However, if the network also has some similar link lengths,
+sequential entanglement generation will negatively impact latency and throughput. \textit{SmartOnDemand} attempts to remedy this by calculating the probability that parallel entanglement yields higher fidelity,
+and chooses either parallel or sequential entanglement based on which is more likely. The motivation, derivation, and justification of this algorithm are explained in detail in the appendix.
+\subsection{Results}
+\begin{figure}[h]
+    \centering
+    \resizebox{1\textwidth}{!}{\input{new_figs/var_rate_diif_length.pgf}}
+    \caption{Asymmetrical/Varying Link Lengths: $[20, 11, 15, 50, 30, 10]$ km}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \resizebox{\textwidth}{!}{\input{new_figs/var_rate_sim_length.pgf}}
+    \caption{Similar link lengths: $[20, 19, 18, 20, 18, 20]$ km}
+\end{figure}
+I tested my algorithms against two network topologies, one with vastly varying link lengths (figure 1) and one with similar link lengths (figure 2).
+Within each topology, I ran 8 evenly spaced trials of differing arriving request rates chosen to show when and how different algorithms start to fall off in performance.
+Let $\mathcal{V}$ denote the varied topology and $\mathcal{S}$ denote the similar topology.
+The range for $\mathcal{V}$ is much smaller, which was expected since longer links take longer to entangle, meaning the service times are longer, thus leading to the system becoming overwhelmed sooner.
+\subsection{Sequential vs Parallel}
+In all topologies, \textit{Parallel} is able to maintain the best performance in terms of latency and throughput, however performs by far the worst in terms of fidelity in $\mathcal{V}$.
+This was expected in terms of latency, but the lower fidelity was confusing at first and is what motived me to create \textit{Sequential}.
+\textit{Sequential} performs better overall in $\mathcal{V}$, sacrificing a little bit of latency and throughput as the arrival rates increase, but performs worse in every way in $\mathcal{S}$.
+Once I understood why this was the case (as explained earlier in the overview of \textit{Smart}), I designed the \textit{Smart} algorithm which ended up performing roughly the same as the better
+of \textit{Sequential} and \textit{Parallel} both topologies.
+\subsection{QoS Performance vs Smart}
+I expected that the \textit{QoS} variants would have the best fidelity and worse latency than the standard variants, which is what was I observed.
+Although \textit{QoS} variants do maintain the best fidelity, it is only a marginal improvement over the standard variants and \textit{Smart}, except for \textit{Parallel} in $\mathcal{V}$.
+The \textit{QoS} discarding behavior adds a lot of latency to the system in both cases, with them performing much worse in $\mathcal{V}$.
+Despite maintaining close to the best fidelity in both topologies, \textit{Smart} is also able to provide close to the best latency and throughput.
+This is the reason I did not bother testing a \textit{QoS} variant of \textit{Smart}, as any potential added benefits would likely be marginal and likely make latency/throughput worse.

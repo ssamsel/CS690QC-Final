@@ -1,0 +1,28 @@
+\section{Introduction}
+In my project, I model a quantum network in which peer nodes are connected to a centralized node, the switch, which is responsible for distributing entanglement amongst the peers.
+I implement the simulation in Python using only basic scientific Python libraries and my own custom simulation framework.
+The switch generates entanglement between itself and the peers according to the Barret-Kok protocol.
+In order to entangle two peers, the switch must first generate entanglement between itself and the peers it wants to entangle, and then perform a Bell state measurement, much like a first generation repeater.
+Each peer submits request to become entangled with another peer to the switch, and the switch must determine the following:
+
+\begin{itemize}
+    \item The order in which to fulfil requests
+    \item When to generate entanglement between itself and a peer
+    \item When/if to discard an entanglement between itself and a peer
+\end{itemize}
+
+In practice, quantum memories are subject to noise, so the entangled Bell pairs will degrade over time.
+I implement different algorithms that manage the above factors, and evaluate how they perform under varying network conditions.
+The key performance metrics I will analyze are:
+\begin{itemize}
+    \item Fidelity of swapped Bell state
+    \item Sojurn Time (i.e. latency)
+    \item Throughput
+    \item Relative Throughput (proportion of fulfilled requests to total number of requests seen in the system)
+\end{itemize}
+I will evaluate performance of different algorithms on varying network conditions such as:
+\begin{itemize}
+    \item Link distance
+    \item Request rates
+    \item Symmetrical vs Asymmetrical networks (varied link distances and/or request rates)
+\end{itemize}

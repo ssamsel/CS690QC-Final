@@ -1,0 +1,12 @@
+__pycache__
+.gitignore
+*.pdf
+*.synctex.gz
+*.log
+*.out
+*.aux
+*.fdb_latexmk
+*.fls
+.vscode
+.venv
+*.auxlock

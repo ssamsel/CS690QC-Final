@@ -1,0 +1,30 @@
+\section{Model and Assumptions}
+\subsection{Fixed Parameters of the Physical System}
+\begin{itemize}
+    \item All links use the same type of fiber with $L_{att} = 22$ km and speed of light $c = 2 \times 10^8$ m/s
+    \item Heralding stations are located exactly in the middle of each link.
+    \item Success probability of an entanglement attempt is $\frac{\eta_i^2}{2}$ and $\eta_i = \exp(-\frac{L_i}{2L_{att}})$
+    \item Each attempt takes $2\tau_i$ seconds, where $\tau_i$ is the propagation delay derived from $L_i$ and $c$
+\end{itemize}
+\subsection{Switch Capabilities}
+\begin{itemize}
+    \item 2 communication qubits totals, allowing for only 1 BSM/request served at a time (the simulation framework supports 1 communication per peer however).
+    \item BSMs and quantum gates are perfect.
+    \item Each BSM takes negligible time along with the algorithm's decision making steps.
+\end{itemize}
+\subsection{Request Assumptions}
+\begin{itemize}
+    \item Request rates are predetermined and do not change over time.
+    \item Requests from peer $i \rightsquigarrow j$ and considered the same as requests from $j \rightsquigarrow i$
+    \item Requests are served in FIFO order within their class (but I only test global FIFO order algorithms).
+\end{itemize}
+\subsection{Probabilistic Assumptions}
+\begin{itemize}
+    \item Inter-peer entanglement requests are Poisson processes
+    \item Each Barret-Kok run is a Bernoulli process
+\end{itemize}
+\subsection{Noise Model}
+\begin{itemize}
+    \item EPR pairs are time-evolved werner states: $\rho(t) = e^{-\Gamma t}\Phip + (1-e^{-\Gamma t})\frac{I_2}{2}$
+    \item $\Gamma = \frac{1}{T_1} = \frac{1}{5 ms} = .2$ (seems to by typical for NV centers from my understanding).
+\end{itemize}

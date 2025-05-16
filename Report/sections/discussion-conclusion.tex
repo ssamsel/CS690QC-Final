@@ -1,0 +1,18 @@
+\section{Discussion and Conclusion}
+Overall, the \textit{Smart} algorithm appears to perform the best.
+It can handle varying network topologies across different simulations, and presumably handle varying network topologies during the simulation.
+There is still a vast amount of testing that can be done, but is unfortunately too large of a task to take on for this project.
+I initially started my project testing switch variations that had 1 communication qubit per peer and could perform parallel BSMs,
+but was unable to find any particularly interesting results or come up with any novel algorithms.
+From that testing it was apparent how much more performant such a switch would be, with the maximum arrival rates before system instability
+being orders of magnitude higher than the single swap algorithms I presented.
+I left the parallel/multi-qubit algorithms, along with various tests and figures from those algorithms in my codebase.
+\subsection{Future Work and Improvements}
+To make my findings more thorough, more network topologies should be tested.
+A simulation can be run that averages the performances of the algorithms on the average of every possible link length permutation within some fixed set of bounds.
+I would have tried to implement this however such a test would take an excruciatingly long time to run and is why I decided not to.
+
+As mentioned earlier, parallel BSM capable switches perform substantially better with high request rates, although I did notice they performed worse with low request rates.
+It would be interesting to see if a dynamic algorithm could be implemented that selects specifically the ideal number of BSMs to make at a given moment in time, and how such and algorithm would compare.
+If given more time I would want to test how different QoS policies would work, such as not discarding a lower fidelity state if the current observed load is high, for example.
+It would be interesting to see how this would compare to \textit{Smart} and if there exist QoS policies that would either outperform \textit{Smart} overall or specifically work well with it.

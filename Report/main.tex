@@ -1,0 +1,104 @@
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage{amsmath,amsfonts,amsthm,amssymb}
+\usepackage{url}
+\usepackage[demo]{graphicx}
+\usepackage{caption} 
+\usepackage{algpseudocode}
+\usepackage{mathtools}
+\usepackage{blochsphere}
+\usepackage{bbm}
+\usepackage{float}
+\usepackage{framed}
+\usepackage{enumerate}
+\usepackage{listings} % for the code in C2
+\usepackage{cancel}
+\usepackage{color}
+\usepackage{enumitem}
+\setlist{nolistsep}
+\usepackage{import}
+\usepackage{tikz}
+\usepackage{titlesec}
+\usepackage{multicol}
+\usepackage{pgfplots}
+\usetikzlibrary{shapes,arrows,positioning}
+\usepackage[colorlinks=true, linkcolor=red, urlcolor=blue, citecolor=blue]{hyperref}
+\usepackage{qcircuit}
+\DeclarePairedDelimiter\bra{\langle}{\rvert}
+\DeclarePairedDelimiter\ket{\lvert}{\rangle}
+\DeclarePairedDelimiterX\braket[2]{\langle}{\rangle}{#1\,\delimsize\vert\,\mathopen{}#2}
+\DeclarePairedDelimiterX\ketbra[2]{\lvert}{\rvert}{#1\,\delimsize\rangle\langle\,\mathopen{}#2}
+\newcommand{\phip}{\Phi^{+}}
+\newcommand{\phim}{\Phi^{-}}
+\newcommand{\psip}{\Psi^{+}}
+\newcommand{\psim}{\Psi^{-}}
+\newcommand{\Phip}{\ketbra{\Phi^{+}}{\Phi^{+}}}
+\newcommand{\Phim}{\ketbra{\Phi^{-}}{\Phi^{-}}}
+\newcommand{\Psip}{\ketbra{\Psi^{+}}{\Psi^{+}}}
+\newcommand{\Psim}{\ketbra{\Psi^{-}}{\Psi^{-}}}
+\DeclareMathOperator*{\E}{\mathbb{E}}
+\let\Pr\relax
+\DeclareMathOperator*{\Pr}{\mathbb{P}}
+\let\Tr\relax
+\DeclareMathOperator*{\Tr}{\mathbf{Tr}}
+\DeclareMathOperator*{\R}{\mathbb{E}}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\titlespacing\section{0pt}{\parskip}{-\parskip}
+\titlespacing\subsection{0pt}{\parskip}{-\parskip}
+\titlespacing\subsubsection{0pt}{\parskip}{-\parskip}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+\topmargin -10ex
+\advance \topmargin by -\headheight
+\advance \topmargin by -\headsep
+\textheight 9.5in
+\oddsidemargin 0pt
+\evensidemargin \oddsidemargin
+\marginparwidth 0.5in
+\textwidth 6.5in
+
+\parindent 0in
+\parskip .5ex
+
+\begin{document}
+
+\begin{center}
+    \framebox{
+        \vbox{
+            \hbox to 6.50in { {\bf COMPSCI 690QC: Quantum Communication} \hfill Spring 2025 }
+            \vspace{4mm}
+            \hbox to 6.50in { {\Large \hfill Final Project  \hfill} }
+            \vspace{2mm}
+            \hbox to 6.50in { {\hfill Shymon Samsel \hfill} }
+        }
+    }
+\end{center}
+\vspace*{-5mm}
+\import{sections/}{intro.tex}
+\import{sections/}{model-assumptions.tex}
+\import{sections/}{implementation.tex}
+\import{sections/}{results-eval.tex}
+\import{sections/}{discussion-conclusion.tex}
+\import{sections/}{appendix.tex}
+\end{document}

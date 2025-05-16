@@ -1,0 +1,28 @@
+\section{Implementation}
+Resource management algorithms and entanglement distribution algorithms interoperate, so they are combined into one algorithm implemented as a subclass of \textit{Simulation}.
+Each simulation algorithm implements three methods: \textit{matching\_decision}, \textit{entanglement\_decision}, and \textit{idle\_decision},
+which are invoked looping in that order until the time exceeds the max interval specified for the simulation.
+Since request arrivals are Poisson processes, the simulation operates in an approximation of continuous time, limited by floating point accuracy.
+At a high level, \textit{matching\_decision} decides which set of peers to entangle swap,
+\textit{entanglement\_decision} manages resources (e.g. entanglement generation, discarding past entanglement, etc.),
+and \textit{idle\_decision} handles moving forwards in time.
+The behavior of each method is not strict and I chose to implement the simulations this way to allow for reuse of code between different algorithms along with flexibility of algorithm design.
+\subsection{Approximating Continuous Time}
+Let $T_{sim}$ be the current time at an instant in the simulation.
+\subsubsection{Entanglement Generation}
+Entanglement generation attempts are Bernoulli processes which means that sampling from the geometric distribution simulates the number of attempts before entanglement is generated.
+When the algorithm decides it wants to become entangled with peer $i$, it samples $T_{entgl}(i) = T_{sim}+2\tau_iN$, where $N \sim \text{ Geometric}(\frac{\eta_i^{2}}{2})$.
+It stores the sampled $T_{entgl}(i)$, and does not consider itself entangled with the peer until the after $T_{engl}(i)$, which is approximated by $T_{sim} \geq T_{entgl}(i)$.
+$T_{engtl}(i)$ cannot be resampled until $T_{sim} \geq T_{entgl}(i)$ and the algorithm is restricted from using any $T_{engtl}(i)$ in any decision it makes, as a real implementation cannot see into the future, nor alter it.
+\subsubsection{Request Arrivals}
+Requests are considered symmetrical, which means we have request rates $\lambda_{i \leftrightsquigarrow j} = \lambda_{i \rightsquigarrow j} + \lambda_{j \rightsquigarrow i}$ by the additive property of Poisson processes.
+Each loop of the algorithm involves advancing forwards in time by some value, let that value be $T_{adv}$.
+For each request class $k$, $A_k \sim \text{ Poisson}(\lambda_kT_{adv})$ is sampled.
+Then to determine the arrivals times of each of the $A_k$ requests, $A_k$ samples are drawn uniformly in the interval $[0, T_{adv}]$, since arrivals are uniformly distributed in fixed intervals in Poisson processes.
+Each of these samples is incremented by $T_{sim}$, sorted, and placed into the queue corresponding to request class $k$.
+The algorithm does not ``see'' requests that have arrival times greater than $T_{sim}$.
+\subsubsection{Idling}
+The \textit{idle\_decison} method determines $T_{adv}$. The algorithm can idle until the next entanglement succeeds, until all entanglements succeed, a fixed amount of time, or until the next request arrives.
+If the algorithm's determination of $T_{adv}$ computes to 0, the algorithm will idle until the next request arrives.
+If there are no requests in any queue, the simulation samples $T_{adv} \sim \text{ Exponential}\left(\frac{1}{\sum_k\lambda_k}\right)$, since Poisson interevent times exponentially distributed.
+It is possible that no requests will arrive in this sampled $T_{adv}$, but since exponential distributions are memoryless, such an event does not affect the distribution.
